@@ -1,4 +1,3 @@
-
 class PathHelper {
 
   def shortestPath(paths: Vector[Path]): Option[Path] =
@@ -35,7 +34,7 @@ class PathHelper {
   def bestPathFromList(paths: Vector[Path], stops: Vector[Point]): Option[Path] =
     shortestPath(filterPathWithStops(paths, stops))
 
-  def findAllPathsRec(segments: Vector[Segment], start: Point, end: Point, currentPath: Path): Vector[Path] =
+  def findAllPathsRec(segments: Vector[Segment], start: Point, end: Point, currentPath: Path = Path(Vector())): Vector[Path] =
     segments match {
       case Vector() => Vector(currentPath)
       case _ =>
@@ -44,14 +43,14 @@ class PathHelper {
             if (segments.filter(_.from == start).isEmpty)
               Vector(currentPath)
             else
-              segments.filter(_.from == start).flatMap(segment => findAllPathsRec(segments.filter(_ != segment), segment.to, end, new Path(currentPath.segments.:+(segment))))
+              segments.filter(_.from == start).flatMap(segment => findAllPathsRec(segments.filter(_ != segment), segment.to, end, new Path(currentPath.segments :+ segment)))
           case _ =>
             if (currentPath.segments.last.to == end)
               Vector(currentPath)
             else if (segments.filter(seg => seg.from == start && seg.to != currentPath.segments.last.from).isEmpty)
               Vector(currentPath)
             else
-              segments.filter(seg => seg.from == start && seg.to != currentPath.segments.last.from).flatMap(segment => findAllPathsRec(segments.filter(_ != segment), segment.to, end, new Path(currentPath.segments.:+(segment))))
+              segments.filter(seg => seg.from == start && seg.to != currentPath.segments.last.from).flatMap(segment => findAllPathsRec(segments.filter(_ != segment), segment.to, end, new Path(currentPath.segments :+ segment)))
         }
     }
 
@@ -59,7 +58,7 @@ class PathHelper {
     segments match {
       case Vector() => Vector()
       case _ =>
-        segments.flatMap(p => findAllPathsRec(segments, start, end, new Path(Vector()))).filter(_.segments.last.to == end).distinct
+        segments.flatMap(p => findAllPathsRec(segments, start, end)).filter(_.segments.last.to == end).distinct
     }
 
   def bestPath(segments: Vector[Segment], from: Point, to: Point, stops: Vector[Point] = Vector()): Option[Path] =

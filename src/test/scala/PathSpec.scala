@@ -55,6 +55,7 @@ class PathSpec extends FlatSpec with Matchers {
   val tlTotl2 = Path(Vector(tlbl, blb, bt, tlt2))
 
   val helper = new PathHelper
+
   // Compute the length of a segment
 
   "a segment" should "compute its distance" in {
