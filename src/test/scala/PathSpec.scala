@@ -193,22 +193,22 @@ class PathSpec extends FlatSpec with Matchers {
   // Find all possible paths
 
   "The possible paths when the segments are empty" should "be Vector()" in {
-    val all = helper.findAllPaths(emptyListPath, tl, br)
+    val all = helper.findAllPathsRec(emptyListPath, tl, br)
     all shouldBe Vector()
   }
 
   "The possible paths with the list `[Segment(tl, t)]`" should "be the segment" in {
-    val all = helper.findAllPaths(Vector(tlt), tl, t)
+    val all = helper.findAllPathsRec(Vector(tlt), tl, t)
     all shouldBe Vector(singlePath)
   }
 
   "The possible paths with segments without cycle" should "be the 2 paths" in {
-    val all = helper.findAllPaths(listSegment, tl, b)
+    val all = helper.findAllPathsRec(listSegment, tl, b)
     all shouldBe Vector(tlTob1, tlTob2)
   }
 
   "The possible paths with segments with cycle" should "be the path" in {
-    val all = helper.findAllPaths(listSegment, tl, tl)
+    val all = helper.findAllPathsRec(listSegment, tl, tl)
     all shouldBe Vector(tlTotl1, tlTotl2)
   }
 

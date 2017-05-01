@@ -36,32 +36,25 @@ class PathHelper {
 
   def findAllPathsRec(segments: Vector[Segment], start: Point, end: Point, currentPath: Path = Path(Vector())): Vector[Path] =
     segments match {
-      case Vector() => Vector(currentPath)
+      case Vector() => Vector()
       case _ =>
         currentPath match {
           case Path(Vector()) =>
             if (segments.filter(_.from == start).isEmpty)
               Vector(currentPath)
             else
-              segments.filter(_.from == start).flatMap(segment => findAllPathsRec(segments.filter(_ != segment), segment.to, end, new Path(currentPath.segments :+ segment)))
+              segments.filter(_.from == start).flatMap(segment => findAllPathsRec(segments, segment.to, end, new Path(currentPath.segments :+ segment)))
           case _ =>
             if (currentPath.segments.last.to == end)
               Vector(currentPath)
             else if (segments.filter(seg => seg.from == start && seg.to != currentPath.segments.last.from).isEmpty)
               Vector(currentPath)
             else
-              segments.filter(seg => seg.from == start && seg.to != currentPath.segments.last.from).flatMap(segment => findAllPathsRec(segments.filter(_ != segment), segment.to, end, new Path(currentPath.segments :+ segment)))
+              segments.filter(seg => seg.from == start && seg.to != currentPath.segments.last.from).flatMap(segment => findAllPathsRec(segments, segment.to, end, new Path(currentPath.segments :+ segment)))
         }
     }
 
-  def findAllPaths(segments: Vector[Segment], start: Point, end: Point): Vector[Path] =
-    segments match {
-      case Vector() => Vector()
-      case _ =>
-        segments.flatMap(p => findAllPathsRec(segments, start, end)).filter(_.segments.last.to == end).distinct
-    }
-
   def bestPath(segments: Vector[Segment], from: Point, to: Point, stops: Vector[Point] = Vector()): Option[Path] =
-    bestPathFromList(findAllPaths(segments, from, to), stops)
+    bestPathFromList(findAllPathsRec(segments, from, to), stops)
 
 }
